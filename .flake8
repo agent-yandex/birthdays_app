@@ -1,0 +1,31 @@
+[flake8]
+
+inline-quotes = double
+multiline-quotes = double
+docstring-quotes = double
+max-line-length = 99
+max-local-variables = 11
+max-complexity = 8
+max-module-members = 10
+
+exclude = app/database/models.py, alembic/, app/utils/responses.py
+
+extend-ignore =
+    WPS305 WPS237 # f-strings are the best
+    WPS221
+    DAR401
+    WPS609 # __dict__ usage
+    I # isort and black know their business
+    WPS420 WPS604 # pass is a thing
+    WPS306
+    WPS602 # @staticmethod
+    S106 # bearer token
+    WPS201 # many imports
+    WPS229 WPS329 # JWT token get_current_user
+    WPS331 # for tests (Depends)
+    WPS226 # conftest is a joke
+    RST306 # regex
+    S101 # we need assert!
+
+per-file-ignores =
+    *test*: WPS432 WPS442 DAR101

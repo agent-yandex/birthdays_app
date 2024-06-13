@@ -75,8 +75,6 @@ def downgrade() -> None:
         postgresql_using="hash",
     )
     op.drop_table("subscription")
-    op.drop_index(
-        "hash_index_username", table_name="user", postgresql_using="hash"
-    )
+    op.drop_index("hash_index_username", table_name="user", postgresql_using="hash")
     op.drop_table("user")
     # ### end Alembic commands ###

@@ -1,14 +1,21 @@
+"""
+Module defining SQLAlchemy models and utility functions for user management.
+
+This module contains SQLAlchemy models representing users and their subscriptions,
+along with utility functions for user authentication and validation.
+"""
+
+from datetime import date
 from typing import Annotated
 from uuid import UUID, uuid4
-from datetime import date
 
 from fastapi import HTTPException, status
 from passlib.handlers.pbkdf2 import pbkdf2_sha256
-from sqlalchemy import String, Date, ForeignKey, UniqueConstraint, Index
-from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
-from sqlalchemy.ext.asyncio import AsyncAttrs
 from pydantic import Field, StringConstraints
 from pydantic_marshals.sqlalchemy import MappedModel
+from sqlalchemy import Date, ForeignKey, Index, String, UniqueConstraint
+from sqlalchemy.ext.asyncio import AsyncAttrs
+from sqlalchemy.orm import DeclarativeBase, Mapped, mapped_column, relationship
 
 
 class Base(AsyncAttrs, DeclarativeBase):
@@ -37,9 +44,7 @@ class User(UUIDMixin, Base):
     birthday: Mapped[str] = mapped_column(Date)
 
     subscriptions: Mapped[list["Subscription"]] = relationship(
-        back_populates="user",
-        foreign_keys="Subscription.user_id",
-        lazy="selectin"
+        back_populates="user", foreign_keys="Subscription.user_id", lazy="selectin",
     )
 
     # Validators
@@ -68,13 +73,13 @@ class User(UUIDMixin, Base):
             (name, NameType),
             (surname, NameType),
             birthday,
-        ]
+        ],
     )
 
     @staticmethod
     def generate_hash(password: str) -> str:
         return pbkdf2_sha256.hash(password)
-    
+
     def is_password_valid(self, password: str) -> bool:
         return pbkdf2_sha256.verify(password, self.password)
 
@@ -93,10 +98,12 @@ class Subscription(UUIDMixin, Base):
     user: Mapped["User"] = relationship(
         back_populates="subscriptions",
         foreign_keys="Subscription.user_id",
-        lazy="selectin"
+        lazy="selectin",
     )
 
     __table_args__ = (
-        UniqueConstraint("user_id", "user_sub_id", name="user_id_subscription_id_unique"),
+        UniqueConstraint(
+            "user_id", "user_sub_id", name="user_id_subscription_id_unique",
+        ),
         Index("hash_index_user_id", user_id, postgresql_using="hash"),
     )

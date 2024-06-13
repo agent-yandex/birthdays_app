@@ -26,7 +26,7 @@ credentials = {
     "password": User.generate_hash("password"),
     "name": "test_name",
     "surname": "test_surname",
-    "birthday": "2000-01-"
+    "birthday": "2000-01-",
 }
 
 

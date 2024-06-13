@@ -1,17 +1,36 @@
-import os
+"""
+Provides utilities for handling asynchronous database sessions.
 
-import dotenv
-from sqlalchemy import create_engine
-from sqlalchemy.ext.asyncio import create_async_engine, async_sessionmaker, AsyncSession
+This module initializes an asynchronous database engine and session maker
+using SQLAlchemy's async capabilities. It also defines a function `get_async_session`
+that yields an asynchronous session when called.
+"""
+
+from typing import AsyncGenerator
+
+from sqlalchemy.ext.asyncio import (
+    AsyncSession,
+    async_sessionmaker,
+    create_async_engine,
+)
+
+from app.utils.config import PG_DBNAME, PG_HOST, PG_PASSWORD, PG_PORT, PG_USER
+
+DB_URL = f"postgresql+asyncpg://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_DBNAME}"
+
+engine = create_async_engine(DB_URL)
+async_session_maker = async_sessionmaker(engine)
 
 
-def get_db_url() -> str:
-    dotenv.load_dotenv()
-    PG_VARS = 'PG_HOST', 'PG_PORT', 'PG_USER', 'PG_PASSWORD', 'PG_DBNAME'
-    credentials = {var: os.environ.get(var) for var in PG_VARS}
+async def get_async_session() -> AsyncGenerator[AsyncSession, None]:
+    """
+    Asynchronous generator that yields an SQLAlchemy AsyncSession.
 
-    return 'postgresql+asyncpg://{PG_USER}:{PG_PASSWORD}@{PG_HOST}:{PG_PORT}/{PG_DBNAME}'.format(**credentials)
+    This function asynchronously creates a session using the async_session_maker
+    context manager. It yields the created session once it is acquired.
 
-
-engine = create_async_engine(get_db_url())
-sessionmaker = async_sessionmaker(engine)
+    Yields:
+        AsyncSession: An SQLAlchemy AsyncSession object.
+    """
+    async with async_session_maker() as session:
+        yield session

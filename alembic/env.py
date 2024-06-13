@@ -8,14 +8,14 @@ from sqlalchemy.ext.asyncio import async_engine_from_config
 from alembic import context
 
 from app.database.models import Base, User, Subscription
-from app.database.connection import get_db_url
+from app.database.connection import DB_URL
 
 config = context.config
 
 if config.config_file_name is not None:
     fileConfig(config.config_file_name)
 
-config.set_main_option("sqlalchemy.url", get_db_url())
+config.set_main_option("sqlalchemy.url", DB_URL)
 
 target_metadata = Base.metadata
 

@@ -1,3 +1,5 @@
+"""This module defines custom response classes."""
+
 from enum import Enum
 from typing import Any
 
@@ -5,6 +7,16 @@ from fastapi import HTTPException, status
 
 
 class Responses(HTTPException, Enum):
+    """
+    Custom enumeration class for defining HTTP error responses.
+
+    This class extends both HTTPException and Enum to define custom responses for various HTTP error scenarios.
+    It provides a method to generate a dictionary of HTTP response codes with corresponding error details and examples.
+
+    Attributes:
+        value (HTTPException): The base HTTPException value associated with each response.
+    """
+
     value: HTTPException
 
     @classmethod
@@ -37,7 +49,10 @@ class SigninResponses(Responses):
 
 
 class SignupResponses(Responses):
-    INCORRECT_BIRTHDAY = (status.HTTP_409_CONFLICT, "Birthday must be less then current date")
+    INCORRECT_BIRTHDAY = (
+        status.HTTP_409_CONFLICT,
+        "Birthday must be less then current date",
+    )
     USERNAME_IN_USE = (status.HTTP_409_CONFLICT, "Username already in use")
 
 
@@ -55,9 +70,15 @@ class UnsubscribeResponses(Responses):
 
 class ChangePasswordResponses(Responses):
     WRONG_PASSWORD = (status.HTTP_401_UNAUTHORIZED, "Wrong password")
-    PASSWORD_MATCHES_CURRENT = (status.HTTP_409_CONFLICT, "New password matches the current one")
+    PASSWORD_MATCHES_CURRENT = (
+        status.HTTP_409_CONFLICT,
+        "New password matches the current one",
+    )
 
 
 class UpdateProfileResponses(Responses):
     UNAUTHORIZED = (status.HTTP_401_UNAUTHORIZED, "Unauthorized user")
-    INCORRECT_BIRTHDAY = (status.HTTP_409_CONFLICT, "Birthday must be less then current date")
+    INCORRECT_BIRTHDAY = (
+        status.HTTP_409_CONFLICT,
+        "Birthday must be less then current date",
+    )
